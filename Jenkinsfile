@@ -2,20 +2,21 @@ pipeline {
     agent any
 
     environment {
-        MINIKUBE_HOME = '/home/vijay-chowdary/.minikube'
-        KUBECONFIG = '/home/vijay-chowdary/.kube/config'
-        DOCKER_IMAGE = 'vijay14082003/flask-cicd-app'
+        MINIKUBE_HOME = '/home/ec2-user/.minikube'
+        KUBECONFIG = '/home/ec2-user/.kube/config'
+        DOCKER_IMAGE = 'kubebhavesh/flask-cicd-app'
     }
-
-    triggers {
-        cron('H/2 * * * *')
+	
+	triggers {
+        // Triggers the pipeline when a webhook is received from GitHub
+        githubPush() 
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/tholuchurivijaykumar/flask-cicd-project.git'
+                    url: 'https://github.com/GitBhaveshKathore/flask-cicd-project.git'
             }
         }
 
@@ -27,13 +28,13 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                sh 'python -m pytest tests/ -v || true'
+                sh 'python3 -m pytest tests/ -v || true'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'python -c "import app; print(\'Build OK\')"'
+                sh 'python3 -c "import app; print(\'Build OK\')"'
             }
         }
 
@@ -74,12 +75,12 @@ pipeline {
                 sh 'kubectl get svc flask-cicd-app-service'
                 sh 'curl -s http://$(minikube ip):30090/api/health'
             }
-        }
-        stage('run on EC2 instatnce') {
+        stage('aws environment') {
             steps {
-                sh 'pkill -f 30090'
+                sh 'pkill -f 300090'
                 sh 'nohup kubectl port-forward --address 0.0.0.0 svc/flask-cicd-app-service 30090:80 > /dev/null 2>&1 &'
             }
+        }
         }
     }
 
