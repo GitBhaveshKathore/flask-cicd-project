@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask-cicd-app
-        image: vijay14082003/flask-cicd-app:latest
+        image: kubebhavesh/flask-cicd-app
         imagePullPolicy: Never
         ports:
         - containerPort: 5000
