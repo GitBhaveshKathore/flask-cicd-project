@@ -26,6 +26,7 @@ pipeline {
             }
         }
 
+
         stage('Unit Tests') {
             steps {
                 sh 'python3 -m pytest tests/ -v || true'
@@ -76,8 +77,8 @@ pipeline {
                 sh 'curl -s http://$(minikube ip):30090/api/health'
             }
         }
-        
-        stage('aws environment') {
+
+        stage('aws prechecks') {
             steps {
                 sh 'pkill -f 30090'
                 sh 'nohup kubectl port-forward --address 0.0.0.0 svc/flask-cicd-app-service 30090:80 > /dev/null 2>&1 &'
