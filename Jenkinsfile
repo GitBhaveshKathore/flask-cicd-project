@@ -77,7 +77,7 @@ pipeline {
             }
         stage('aws environment') {
             steps {
-                sh 'pkill -f 300090'
+                sh 'pkill -f 30090'
                 sh 'nohup kubectl port-forward --address 0.0.0.0 svc/flask-cicd-app-service 30090:80 > /dev/null 2>&1 &'
             }
         }
