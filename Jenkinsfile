@@ -80,7 +80,9 @@ pipeline {
 
         stage('aws prechecks') {
             steps {
-                sh 'pkill -f 30090'
+                // '|| true' prevents the pipeline from crashing if the process isn't currently running
+                sh 'pkill -f "kubectl port-forward.*30090" || true'
+                
                 sh 'nohup kubectl port-forward --address 0.0.0.0 svc/flask-cicd-app-service 30090:80 > /dev/null 2>&1 &'
             }
         }
